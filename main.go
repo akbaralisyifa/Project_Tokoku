@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"tokoku/config"
+)
 
 func main() {
-	fmt.Println("Main.go")
+	setup := config.InportSetting();
+	connection, err := config.ConnectDB(setup)
+
+	if err != nil {
+		fmt.Println("Failed connect to database", err.Error());
+		return;
+	}
+
+
+	fmt.Println(connection)
 }
