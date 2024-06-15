@@ -1,5 +1,5 @@
 package models
 
-func users() {
+func admin() {
 
 }
