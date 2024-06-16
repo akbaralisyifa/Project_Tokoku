@@ -2,16 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type Products struct {
-	gorm.Model
-	Name          string
-	Price         int
-	Stock         int
-	EmployeeID    int
-	TransProducts TransProducts `gorm:"foreignKey:ProductID"`
-}
-
-type TransHistories struct {
+type TransHistories struct { // Transaksi
 	gorm.Model
 	EmployeeID    int
 	MemberID      int
@@ -19,7 +10,7 @@ type TransHistories struct {
 	TransProducts TransProducts `gorm:"foreignKey:TransID"`
 }
 
-type TransProducts struct {
+type TransProducts struct { // Detail transaksi
 	gorm.Model
 	TransID   int
 	ProductID int
