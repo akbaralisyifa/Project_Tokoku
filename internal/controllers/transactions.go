@@ -15,12 +15,12 @@ func NewTransController(m *models.TransModel) *TransController {
 	}
 }
 
-func Dashboard(loginData models.Employees) bool {
+func Dashboard(loginData models.Employees, uc *UsersController) bool {
 	var input int = -1
 
 	for input != 0 {
 		fmt.Println("===== DASHBOARD =====")
-		fmt.Printf("Username: %v | Admin Access: %v\n\n", loginData.Username, loginData.AdminAccess)
+		fmt.Printf("Username: [%v] %v | Admin Access: %v\n\n", loginData.ID, loginData.Username, loginData.AdminAccess)
 		fmt.Println("1. Transaksi")
 		fmt.Println("2. Kelola Data Produk")
 		fmt.Println("3. Kelola Data Member")
@@ -43,16 +43,12 @@ func Dashboard(loginData models.Employees) bool {
 
 		} else if input == 4 {
 			if loginData.AdminAccess {
-				ManageEmployee()
+				uc.ManageEmployees(loginData)
 			} else {
-				fmt.Printf("\nUser %v tidak memiliki Admin Access!\n", loginData.Username)
+				fmt.Printf("User %v tidak memiliki Admin Access!\n\n", loginData.Username)
 			}
 		}
 	}
 
 	return false
-}
-
-func ManageEmployee() {
-
 }
