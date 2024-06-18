@@ -9,22 +9,32 @@ type Products struct {
 	Stock         int
 	EmployeeID    int
 	TransProducts TransProducts `gorm:"foreignKey:ProductID"`
-};
+	StockRecepits StockRecepits `gorm:"foreignKey:ProductID"`
+}
 
-type ProductModel struct{
+type StockRecepits struct {
+	gorm.Model
+	ProductID     int
+	EmployeeID    int
+	OldStock      int
+	IncomingStock int
+	TotalStock    int
+}
+
+type ProductModel struct {
 	db *gorm.DB
-};
+}
 
 func NewProductModel(connection *gorm.DB) *ProductModel {
 	return &ProductModel{
-		db : connection,
+		db: connection,
 	}
 }
 
 // add product
-func (pm *ProductModel) AddProduct(newProduct Products)(Products, error){
+func (pm *ProductModel) AddProduct(newProduct Products) (Products, error) {
 
-	query := pm.db.Create(&newProduct);
+	query := pm.db.Create(&newProduct)
 
 	if query.Error != nil {
 		return Products{}, query.Error
@@ -34,13 +44,9 @@ func (pm *ProductModel) AddProduct(newProduct Products)(Products, error){
 }
 
 // edit product
-func(pm *ProductModel) EditProduct(newStock int, employeeID, productID uint)(error){
+func (pm *ProductModel) EditProduct(newStock int, employeeID, productID uint) error {
 
-	err := pm.db.Model(&Products{}).Where("id = ? AND EmployeeID = ?", productID, employeeID).Update("Stock", newStock).Error;
+	err := pm.db.Model(&Products{}).Where("id = ? AND EmployeeID = ?", productID, employeeID).Update("Stock", newStock).Error
 
-	return err;
+	return err
 }
-
-
-
-

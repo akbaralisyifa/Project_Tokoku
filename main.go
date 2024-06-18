@@ -26,8 +26,10 @@ func mainMenu(connection *gorm.DB) {
 	fmt.Println("By: Muhammad Akbar Ali Syifa & Muhammad Farhan Adriansyah")
 	fmt.Println()
 
-	um := models.NewUsersModel(connection)
-	uc := controllers.NewUsersController(um)
+	em := models.NewEmployeesModel(connection)
+	ec := controllers.NewEmployeesController(em)
+	mm := models.NewMembersModel(connection)
+	mc := controllers.NewMembersController(mm)
 	// tm := models.NewTransModel(connection)
 	// tc := controllers.NewTransController(tm)
 
@@ -44,12 +46,9 @@ func mainMenu(connection *gorm.DB) {
 		fmt.Println()
 
 		if input == 1 && !isLogin {
-			var loginData models.Employees
-			loginData, isLogin = uc.Login()
-			isLogin = controllers.Dashboard(loginData, uc)
-
+			isLogin = ec.Login(mc)
 		} else if input == 9 {
-			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{})
+			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockRecepits{})
 
 			if err != nil {
 				fmt.Println(err)
