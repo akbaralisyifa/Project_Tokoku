@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"tokoku/internal/models"
 )
 
@@ -55,11 +57,17 @@ func (mc *MembersController) CreateMember() {
 
 	fmt.Println("===== Tambah Member Baru =====")
 	fmt.Print("Nama: ")
-	fmt.Scanln(&member.Name)
+	name := bufio.NewScanner(os.Stdin)
+	name.Scan()
+	member.Name = name.Text()
+
 	fmt.Print("No. HP: ")
 	fmt.Scanln(&member.Phone)
+
 	fmt.Print("Alamat: ")
-	fmt.Scanln(&member.Address)
+	address := bufio.NewScanner(os.Stdin)
+	address.Scan()
+	member.Address = address.Text()
 	fmt.Println()
 
 	mc.model.CreateMember(member)
@@ -77,11 +85,17 @@ func (mc *MembersController) UpdateMember() {
 
 	fmt.Println("Kosongkan input jika data tidak akan dirubah.")
 	fmt.Printf("Nama Baru [%v]: ", member.Name)
-	fmt.Scanln(&member.Name)
+	name := bufio.NewScanner(os.Stdin)
+	name.Scan()
+	member.Name = name.Text()
+
 	fmt.Printf("No. HP Baru [%v]: ", member.Phone)
 	fmt.Scanln(&member.Phone)
+
 	fmt.Printf("Alamat Baru [%v]: ", member.Address)
-	fmt.Scanln(&member.Address)
+	address := bufio.NewScanner(os.Stdin)
+	address.Scan()
+	member.Address = address.Text()
 	fmt.Println()
 
 	mc.model.UpdateMember(member)
