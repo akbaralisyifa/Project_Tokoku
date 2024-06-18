@@ -15,23 +15,27 @@ type Employees struct {
 	AdminAccess    bool
 	Products       Products       `gorm:"foreignKey:EmployeeID"`
 	TransHistories TransHistories `gorm:"foreignKey:EmployeeID"`
+	StockRecepits  StockRecepits  `gorm:"foreignKey:EmployeeID"`
 }
 
-type UsersModel struct {
+type EmployeesModel struct {
 	db *gorm.DB
 }
 
-func NewUsersModel(connection *gorm.DB) *UsersModel {
-	return &UsersModel{
+func NewEmployeesModel(connection *gorm.DB) *EmployeesModel {
+	return &EmployeesModel{
 		db: connection,
 	}
 }
 
-func (um *UsersModel) Login(employee Employees) (Employees, bool) {
+func (em *EmployeesModel) Login(employee Employees) (Employees, bool) {
 	var loginData Employees
-	err := um.db.Where("username = ? AND password = ?", employee.Username, employee.Password).First(&loginData).Error
+	err := em.db.Where("username = ? AND password = ?", employee.Username, employee.Password).First(&loginData).Error
 
-	if err != nil {
+	if loginData.ID == 0 {
+		fmt.Printf("\nGagal Login! Pastikan Username dan Password sudah benar!\n\n")
+		return loginData, false
+	} else if err != nil {
 		fmt.Printf("%v\n\n", err)
 		return loginData, false
 	}
@@ -39,8 +43,8 @@ func (um *UsersModel) Login(employee Employees) (Employees, bool) {
 	return loginData, true
 }
 
-func (um *UsersModel) CreateEmployees(employee Employees) {
-	err := um.db.Create(&employee).Error
+func (em *EmployeesModel) CreateEmployee(employee Employees) {
+	err := em.db.Create(&employee).Error
 
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
@@ -49,20 +53,20 @@ func (um *UsersModel) CreateEmployees(employee Employees) {
 	}
 }
 
-func (um *UsersModel) ReadAllEmployees() []Employees {
-	var employee []Employees
-	err := um.db.Find(&employee).Error
+func (em *EmployeesModel) ReadAllEmployees() []Employees {
+	var employees []Employees
+	err := em.db.Find(&employees).Error
 
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
 	}
 
-	return employee
+	return employees
 }
 
-func (um *UsersModel) ReadEmployees(userID int) Employees {
+func (em *EmployeesModel) ReadEmployee(userID int) Employees {
 	var employee Employees
-	err := um.db.Where("id = ?", userID).First(&employee).Error
+	err := em.db.Where("id = ?", userID).First(&employee).Error
 
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
@@ -71,8 +75,8 @@ func (um *UsersModel) ReadEmployees(userID int) Employees {
 	return employee
 }
 
-func (um *UsersModel) UpdateEmployees(employee Employees) {
-	err := um.db.Save(&employee).Error
+func (em *EmployeesModel) UpdateEmployee(employee Employees) {
+	err := em.db.Save(&employee).Error
 
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
@@ -81,8 +85,8 @@ func (um *UsersModel) UpdateEmployees(employee Employees) {
 	}
 }
 
-func (um *UsersModel) DeleteEmployees(employee Employees) {
-	err := um.db.Delete(&employee).Error
+func (em *EmployeesModel) DeleteEmployee(employee Employees) {
+	err := em.db.Delete(&employee).Error
 
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
