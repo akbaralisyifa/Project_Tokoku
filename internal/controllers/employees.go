@@ -15,7 +15,7 @@ func NewEmployeesController(m *models.EmployeesModel) *EmployeesController {
 	}
 }
 
-func (ec *EmployeesController) Login(mc *MembersController) bool {
+func (ec *EmployeesController) Login() (models.Employees, bool) {
 	var employee models.Employees
 
 	fmt.Println("===== Login Pegawai =====")
@@ -27,13 +27,11 @@ func (ec *EmployeesController) Login(mc *MembersController) bool {
 
 	if employee.Username == "admin" && employee.Password == "admin" {
 		employee.AdminAccess = true
-		Dashboard(employee, true, ec, mc)
-		return true
+		return employee, true
 	}
 
 	loginData, isLogin := ec.model.Login(employee)
-	Dashboard(loginData, isLogin, ec, mc)
-	return isLogin
+	return loginData, isLogin
 }
 
 func (ec *EmployeesController) ManageEmployees(loginData models.Employees) {

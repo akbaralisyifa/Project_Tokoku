@@ -18,10 +18,10 @@ func main() {
 		return
 	}
 
-	mainMenu(connection)
+	MainMenu(connection)
 }
 
-func mainMenu(connection *gorm.DB) {
+func MainMenu(connection *gorm.DB) {
 	fmt.Println("================== TOKOKU APP PROJECT ===================")
 	fmt.Println("By: Muhammad Akbar Ali Syifa & Muhammad Farhan Adriansyah")
 	fmt.Println()
@@ -34,7 +34,6 @@ func mainMenu(connection *gorm.DB) {
 	// tc := controllers.NewTransController(tm)
 
 	var input int = -1
-	var isLogin bool
 
 	for input != 0 {
 		fmt.Println("===== Main Menu =====")
@@ -45,8 +44,9 @@ func mainMenu(connection *gorm.DB) {
 		fmt.Scanln(&input)
 		fmt.Println()
 
-		if input == 1 && !isLogin {
-			isLogin = ec.Login(mc)
+		if input == 1 {
+			loginData, isLogin := ec.Login()
+			Dashboard(loginData, isLogin, ec, mc)
 		} else if input == 9 {
 			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockRecepits{})
 
@@ -61,4 +61,42 @@ func mainMenu(connection *gorm.DB) {
 	}
 
 	fmt.Println("Program Selesai. Terima Kasih!")
+}
+
+func Dashboard(loginData models.Employees, isLogin bool, ec *controllers.EmployeesController, mc *controllers.MembersController) {
+	var input int = -1
+
+	for input != 0 && isLogin {
+		fmt.Println("===== Dashboard =====")
+		fmt.Printf("Username: [%v] %v | Admin Access: %v\n\n", loginData.ID, loginData.Username, loginData.AdminAccess)
+		fmt.Println("1. Transaksi")
+		fmt.Println("2. Kelola Data Produk")
+		fmt.Println("3. Kelola Data Member")
+
+		if loginData.AdminAccess {
+			fmt.Println("4. Kelola Data Pegawai")
+		}
+
+		fmt.Println("0. Logout")
+		fmt.Print("Masukkan Input: ")
+		fmt.Scanln(&input)
+		fmt.Println()
+
+		if input == 1 {
+			fmt.Println("TRANSAKSI BERLANGSUNG")
+			fmt.Println()
+		} else if input == 2 {
+
+		} else if input == 3 {
+			mc.ManageMembers(loginData)
+		} else if input == 4 {
+			if loginData.AdminAccess {
+				ec.ManageEmployees(loginData)
+			} else {
+				fmt.Printf("User %v tidak memiliki Admin Access!\n\n", loginData.Username)
+			}
+		} else if input == 0 {
+			isLogin = false
+		}
+	}
 }
