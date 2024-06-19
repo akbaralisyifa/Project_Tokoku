@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type Products struct {
 	gorm.Model
@@ -44,9 +48,25 @@ func (pm *ProductModel) AddProduct(newProduct Products) (Products, error) {
 }
 
 // edit product
-func (pm *ProductModel) EditProduct(newStock int, employeeID, productID uint) error {
+func (pm *ProductModel) EditProduct(newStock int, productID int) error {
 
-	err := pm.db.Model(&Products{}).Where("id = ? AND EmployeeID = ?", productID, employeeID).Update("Stock", newStock).Error
+	var product Products
+
+	err := pm.db.Model(&product).Where("id = ? ", productID).Update("Stock", newStock).Error
 
 	return err
+}
+
+
+// getAllProduct
+func (pm *ProductModel) GetAllProduct() []Products{
+	var getProduct []Products;
+
+	err := pm.db.Find(&getProduct).Error;
+
+	if err != nil{
+		fmt.Println(err)
+	}
+
+	return getProduct;
 }

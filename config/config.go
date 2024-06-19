@@ -21,11 +21,11 @@ func InportSetting() setting {
 		return setting{}
 	}
 
-	result.Host = os.Getenv("host");
-	result.User = os.Getenv("user");
-	result.Password = os.Getenv("password");
-	result.DBName = os.Getenv("dbname");
-	result.Port = os.Getenv("port")
+	result.Host = os.Getenv("DB_HOST");
+	result.User = os.Getenv("DB_USER");
+	result.Password = os.Getenv("DB_PASSWORD");
+	result.DBName = os.Getenv("DB_NAME");
+	result.Port = os.Getenv("DB_PORT")
 
 	return result
 }

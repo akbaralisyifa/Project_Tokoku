@@ -32,6 +32,9 @@ func MainMenu(connection *gorm.DB) {
 	mc := controllers.NewMembersController(mm)
 	// tm := models.NewTransModel(connection)
 	// tc := controllers.NewTransController(tm)
+	pm := models.NewProductModel(connection);
+	pc := controllers.NewProductController(pm)
+
 
 	var input int = -1
 
@@ -46,7 +49,7 @@ func MainMenu(connection *gorm.DB) {
 
 		if input == 1 {
 			loginData, isLogin := ec.Login()
-			Dashboard(loginData, isLogin, ec, mc)
+			Dashboard(loginData, isLogin, ec, mc, pc)
 		} else if input == 9 {
 			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockRecepits{})
 
@@ -63,7 +66,7 @@ func MainMenu(connection *gorm.DB) {
 	fmt.Println("Program Selesai. Terima Kasih!")
 }
 
-func Dashboard(loginData models.Employees, isLogin bool, ec *controllers.EmployeesController, mc *controllers.MembersController) {
+func Dashboard(loginData models.Employees, isLogin bool, ec *controllers.EmployeesController, mc *controllers.MembersController, pc *controllers.ProductController) {
 	var input int = -1
 
 	for input != 0 && isLogin {
@@ -88,7 +91,7 @@ func Dashboard(loginData models.Employees, isLogin bool, ec *controllers.Employe
 			fmt.Println("TRANSAKSI BERLANGSUNG")
 			fmt.Println()
 		} else if input == 2 {
-
+			pc.ManageProduct(loginData)
 		} else if input == 3 {
 			mc.ManageMembers()
 		} else if input == 4 {
