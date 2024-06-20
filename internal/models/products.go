@@ -13,16 +13,7 @@ type Products struct {
 	Stock         int
 	EmployeeID    int
 	TransProducts TransProducts `gorm:"foreignKey:ProductID"`
-	StockRecepits StockRecepits `gorm:"foreignKey:ProductID"`
-}
-
-type StockRecepits struct {
-	gorm.Model
-	ProductID     int
-	EmployeeID    int
-	OldStock      int
-	IncomingStock int
-	TotalStock    int
+	StockRecepits StockReceipts `gorm:"foreignKey:ProductID"`
 }
 
 type ProductModel struct {
@@ -57,16 +48,15 @@ func (pm *ProductModel) EditProduct(newStock int, productID int) error {
 	return err
 }
 
-
 // getAllProduct
-func (pm *ProductModel) GetAllProduct() []Products{
-	var getProduct []Products;
+func (pm *ProductModel) GetAllProduct() []Products {
+	var getProduct []Products
 
-	err := pm.db.Find(&getProduct).Error;
+	err := pm.db.Find(&getProduct).Error
 
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 
-	return getProduct;
+	return getProduct
 }

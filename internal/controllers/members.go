@@ -100,7 +100,8 @@ func (mc *MembersController) UpdateMember() {
 	var memberID int
 
 	fmt.Println("===== Edit Data Member =====")
-	fmt.Println("Masukkan '0' untuk membatalkan.")
+	fmt.Println("Masukkan '0' untuk kembali.")
+	fmt.Println()
 	fmt.Print("Masukkan ID Member: ")
 	fmt.Scanln(&memberID)
 
@@ -143,9 +144,11 @@ func (mc *MembersController) DeleteMember() {
 	var memberID, input int
 
 	fmt.Println("===== Hapus Data Member =====")
-	fmt.Println("Masukkan '0' untuk membatalkan.")
+	fmt.Println("Masukkan '0' untuk kembali.")
+	fmt.Println()
 	fmt.Print("Masukkan ID Member: ")
 	fmt.Scanln(&memberID)
+	fmt.Println()
 
 	if memberID != 0 {
 		member = mc.model.ReadMember(memberID)
@@ -162,6 +165,4 @@ func (mc *MembersController) DeleteMember() {
 			fmt.Printf("Member tidak ditemukan!\n\n")
 		}
 	}
-
-	fmt.Println()
 }

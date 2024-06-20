@@ -25,16 +25,16 @@ func (ec *EmployeesController) Login() (models.Employees, bool) {
 	fmt.Scanln(&employee.Password)
 	fmt.Println()
 
-	if employee.Username == "admin" && employee.Password == "admin" {
-		employee.AdminAccess = true
-		return employee, true
-	}
+	// if employee.Username == "admin" && employee.Password == "admin" {
+	// 	employee.AdminAccess = true
+	// 	return employee, true
+	// }
 
 	loginData, isLogin := ec.model.Login(employee)
 	return loginData, isLogin
 }
 
-func (ec *EmployeesController) ManageEmployees() {
+func (ec *EmployeesController) ManageEmployees(loginData models.Employees) {
 	var input int = -1
 
 	for input != 0 {
@@ -62,7 +62,7 @@ func (ec *EmployeesController) ManageEmployees() {
 		} else if input == 2 {
 			ec.UpdateEmployee()
 		} else if input == 3 {
-			ec.DeleteEmployee()
+			ec.DeleteEmployee(loginData)
 		}
 	}
 }
@@ -120,7 +120,8 @@ func (ec *EmployeesController) UpdateEmployee() {
 	var employeeID int
 
 	fmt.Println("===== Edit Data Pegawai =====")
-	fmt.Println("Masukkan '0' untuk membatalkan.")
+	fmt.Println("Masukkan '0' untuk kembali.")
+	fmt.Println()
 	fmt.Print("Masukkan ID Pegawai: ")
 	fmt.Scanln(&employeeID)
 	fmt.Println()
@@ -149,17 +150,19 @@ func (ec *EmployeesController) UpdateEmployee() {
 	}
 }
 
-func (ec *EmployeesController) DeleteEmployee() {
+func (ec *EmployeesController) DeleteEmployee(loginData models.Employees) {
 	var employee models.Employees
 	var employeeID, input int
 
 	fmt.Println("===== Hapus Data Pegawai =====")
-	fmt.Println("Masukkan '0' untuk membatalkan.")
+	fmt.Println("Masukkan '0' untuk kembali.")
+	fmt.Println()
 	fmt.Print("Masukkan ID Pegawai: ")
 	fmt.Scanln(&employeeID)
-	fmt.Println()
 
-	if employeeID != 0 {
+	if employeeID == int(loginData.ID) {
+		fmt.Printf("User [%v] %v tidak dapat dihapus karena sedang digunakan!\n\n", loginData.ID, loginData.Username)
+	} else if employeeID != 0 {
 		employee = ec.model.ReadEmployee(employeeID)
 
 		if employee.ID != 0 {
