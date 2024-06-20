@@ -30,24 +30,39 @@ func (tc *TransController) ManageTransaction(loginData models.Employees){
 
 		switch inputMenu {
 		case 1:
+
 			_, err := tc.AddTransHistori(int(loginData.ID));
-
+			
 			getOneHistory, err := tc.model.GetOneTransHistory();
-
-			fmt.Println("Data Terakhir History :", )
-
+			
 			if err != nil {
 				fmt.Println("Error to create transaction history:", err)
 			}
+			
+			for {
+				fmt.Println("==== Tambahkan Produk ====");
+				fmt.Println("1. Tambah | 0. Kembali");
+				fmt.Print("Input menu :")
+				var inputTrans int = -1;
+				fmt.Scanln(&inputTrans);
 
-			success, err := tc.AddTransaction(int(getOneHistory.ID));
+				if inputTrans == 0 {
+					break
+				}
 
-			if err != nil {
-			    fmt.Println("Error to create Transaction :");
-			}
+				if inputTrans == 1 {
+					success, err := tc.AddTransaction(int(getOneHistory.ID));
 
-			if success {
-				fmt.Println("Transaction Successfull !")
+					if err != nil {
+						fmt.Println("Error to create Transaction :");
+					}
+
+					if success {
+						fmt.Println("Transaction Successfull !")
+					}
+				
+					continue;
+				}
 			}
 		
 		case 2:
