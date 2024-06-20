@@ -46,7 +46,7 @@ func MainMenu(connection *gorm.DB) {
 	con.mc = controllers.NewMembersController(mm)
 	con.pc = controllers.NewProductController(pm)
 	con.rc = controllers.NewReceiptsController(rm)
-	con.tc = controllers.NewTransController(tm)
+	con.tc = controllers.NewTransController(tm, pm)
 
 	var input int = -1
 
@@ -101,8 +101,7 @@ func Dashboard(loginData models.Employees, isLogin bool, con AllControl) {
 		fmt.Println()
 
 		if input == 1 {
-			fmt.Println("TRANSAKSI BERLANGSUNG")
-			fmt.Println()
+			con.tc.ManageTransaction(loginData)
 		} else if input == 2 {
 			con.pc.ManageProduct(loginData)
 		} else if input == 3 {
