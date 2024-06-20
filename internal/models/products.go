@@ -13,16 +13,7 @@ type Products struct {
 	Stock         int
 	EmployeeID    int
 	TransProducts TransProducts `gorm:"foreignKey:ProductID"`
-	StockRecepits StockRecepits `gorm:"foreignKey:ProductID"`
-}
-
-type StockRecepits struct {
-	gorm.Model
-	ProductID     int
-	EmployeeID    int
-	OldStock      int
-	IncomingStock int
-	TotalStock    int
+	StockRecepits StockReceipts `gorm:"foreignKey:ProductID"`
 }
 
 type ProductModel struct {
@@ -57,42 +48,40 @@ func (pm *ProductModel) EditProduct(newStock int, productID int) error {
 	return err
 }
 
-
 // update Stok
-func(pm *ProductModel) UpdateStockProduct(productID int, quantity int)error {
-   
-	result := pm.db.Model(Products{}).Where("id = ?", productID).Update("Stock", gorm.Expr("Stock - ?", quantity));
+func (pm *ProductModel) UpdateStockProduct(productID int, quantity int) error {
+
+	result := pm.db.Model(Products{}).Where("id = ?", productID).Update("Stock", gorm.Expr("Stock - ?", quantity))
 
 	if result.Error != nil {
-		return result.Error;
+		return result.Error
 	}
 
-	return nil;
+	return nil
 }
 
-
 // getAllProduct
-func (pm *ProductModel) GetAllProduct() []Products{
-	var getProduct []Products;
+func (pm *ProductModel) GetAllProduct() []Products {
+	var getProduct []Products
 
-	err := pm.db.Find(&getProduct).Error;
+	err := pm.db.Find(&getProduct).Error
 
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 
-	return getProduct;
+	return getProduct
 }
 
-// getOneProduct 
+// getOneProduct
 func (pm *ProductModel) GetOneProduct(ID int) (Products, error) {
-	var product Products;
+	var product Products
 
-	err := pm.db.Where("ID = ?", ID).First(&product).Error;
+	err := pm.db.Where("ID = ?", ID).First(&product).Error
 
 	if err != nil {
 		return Products{}, err
 	}
 
-	return product, nil;
+	return product, nil
 }

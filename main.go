@@ -21,20 +21,32 @@ func main() {
 	MainMenu(connection)
 }
 
+type AllControl struct {
+	ec *controllers.EmployeesController
+	mc *controllers.MembersController
+	pc *controllers.ProductController
+	rc *controllers.ReceiptsController
+	tc *controllers.TransController
+}
+
 func MainMenu(connection *gorm.DB) {
 	fmt.Println("================== TOKOKU APP PROJECT ===================")
 	fmt.Println("By: Muhammad Akbar Ali Syifa & Muhammad Farhan Adriansyah")
 	fmt.Println()
 
 	em := models.NewEmployeesModel(connection)
-	ec := controllers.NewEmployeesController(em)
 	mm := models.NewMembersModel(connection)
-	mc := controllers.NewMembersController(mm)
-	pm := models.NewProductModel(connection);
-	pc := controllers.NewProductController(pm);
-    tm := models.NewTransModel(connection);
-	tc := controllers.NewTransController(tm, pm);
+	pm := models.NewProductModel(connection)
+	rm := models.NewReceiptsModel(connection)
+	tm := models.NewTransModel(connection)
 
+	var con AllControl
+
+	con.ec = controllers.NewEmployeesController(em)
+	con.mc = controllers.NewMembersController(mm)
+	con.pc = controllers.NewProductController(pm)
+	con.rc = controllers.NewReceiptsController(rm)
+	con.tc = controllers.NewTransController(tm, pm)
 
 	var input int = -1
 
@@ -48,10 +60,10 @@ func MainMenu(connection *gorm.DB) {
 		fmt.Println()
 
 		if input == 1 {
-			loginData, isLogin := ec.Login()
-			Dashboard(loginData, isLogin, ec, mc, pc, tc)
+			loginData, isLogin := con.ec.Login()
+			Dashboard(loginData, isLogin, con)
 		} else if input == 9 {
-			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockRecepits{})
+			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockReceipts{})
 
 			if err != nil {
 				fmt.Println(err)
@@ -66,14 +78,7 @@ func MainMenu(connection *gorm.DB) {
 	fmt.Println("Program Selesai. Terima Kasih!")
 }
 
-func Dashboard(
-	loginData models.Employees, 
-	isLogin bool, 
-	ec *controllers.EmployeesController, 
-	mc *controllers.MembersController, 
-	pc *controllers.ProductController,
-	tc *controllers.TransController,
-	) {
+func Dashboard(loginData models.Employees, isLogin bool, con AllControl) {
 	var input int = -1
 
 	for input != 0 && isLogin {
@@ -83,10 +88,11 @@ func Dashboard(
 		fmt.Printf("Username: [%v] %v | Admin Access: %v\n\n", loginData.ID, loginData.Username, loginData.AdminAccess)
 		fmt.Println("1. Transaksi")
 		fmt.Println("2. Kelola Data Produk")
-		fmt.Println("3. Kelola Data Member")
+		fmt.Println("3. Kelola Penerimaan Stok")
+		fmt.Println("4. Kelola Data Member")
 
 		if loginData.AdminAccess {
-			fmt.Println("4. Kelola Data Pegawai")
+			fmt.Println("5. Kelola Data Pegawai")
 		}
 
 		fmt.Println("0. Logout")
@@ -95,14 +101,16 @@ func Dashboard(
 		fmt.Println()
 
 		if input == 1 {
-			tc.ManageTransaction(loginData)
+			con.tc.ManageTransaction(loginData)
 		} else if input == 2 {
-			pc.ManageProduct(loginData)
+			con.pc.ManageProduct(loginData)
 		} else if input == 3 {
-			mc.ManageMembers()
+			con.rc.ManageReceipts(loginData)
 		} else if input == 4 {
+			con.mc.ManageMembers()
+		} else if input == 5 {
 			if loginData.AdminAccess {
-				ec.ManageEmployees()
+				con.ec.ManageEmployees(loginData)
 			} else {
 				fmt.Printf("User %v tidak memiliki Admin Access!\n\n", loginData.Username)
 			}

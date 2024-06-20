@@ -7,16 +7,15 @@ import (
 
 type ProductController struct {
 	model *models.ProductModel
-};
+}
 
-func NewProductController(m *models.ProductModel) *ProductController{
+func NewProductController(m *models.ProductModel) *ProductController {
 	return &ProductController{
 		model: m,
 	}
-};
+}
 
-
-func(pc *ProductController) ManageProduct(loginData models.Employees) {
+func (pc *ProductController) ManageProduct(loginData models.Employees) {
 	var input int = -1
 
 	for input != 0 {
@@ -49,23 +48,23 @@ func(pc *ProductController) ManageProduct(loginData models.Employees) {
 	}
 }
 
-func(pc *ProductController) AddProduct()(bool, error){
-	var newProduct models.Products;
-	var employeeID int;
+func (pc *ProductController) AddProduct() (bool, error) {
+	var newProduct models.Products
+	var employeeID int
 
-	fmt.Println("==== CREATE PRODUCT ====");
-	fmt.Print("Input ID Pegawai :");
+	fmt.Println("==== CREATE PRODUCT ====")
+	fmt.Print("Input ID Pegawai :")
 	fmt.Scanln(&employeeID)
-	fmt.Print("Input Product Name : ");
-	fmt.Scanln(&newProduct.Name);
-	fmt.Print("Input Price :");
-	fmt.Scanln(&newProduct.Price);
-	fmt.Print("Input Stock Product :");
-	fmt.Scanln(&newProduct.Stock);
+	fmt.Print("Input Product Name : ")
+	fmt.Scanln(&newProduct.Name)
+	fmt.Print("Input Price :")
+	fmt.Scanln(&newProduct.Price)
+	fmt.Print("Input Stock Product :")
+	fmt.Scanln(&newProduct.Stock)
 
-	newProduct.EmployeeID = employeeID;
+	newProduct.EmployeeID = employeeID
 
-	_, err := pc.model.AddProduct(newProduct);
+	_, err := pc.model.AddProduct(newProduct)
 
 	if err != nil {
 		return false, err
@@ -74,14 +73,13 @@ func(pc *ProductController) AddProduct()(bool, error){
 	return true, nil
 }
 
-
-func(pc *ProductController) EditProduct()(string, error){
-	var productID int;
-	var inputStock int;
+func (pc *ProductController) EditProduct() (string, error) {
+	var productID int
+	var inputStock int
 	var succ = "Data Product Berhasil di Ubah."
 	var failed = "Data Product Gagal Di Ubah!"
 
-	productList := pc.model.GetAllProduct();
+	productList := pc.model.GetAllProduct()
 
 	if len(productList) == 0 {
 		fmt.Println("===== Data Product Tidak Tersedia =====")
@@ -94,19 +92,18 @@ func(pc *ProductController) EditProduct()(string, error){
 		fmt.Println()
 	}
 
-
-	fmt.Println("==== UPDATE STOCK PRODUCT ====");
-	fmt.Print("Input Product ID :");
-	fmt.Scanln(&productID);
-	fmt.Print("Input Stock Product :");
+	fmt.Println("==== UPDATE STOCK PRODUCT ====")
+	fmt.Print("Input Product ID :")
+	fmt.Scanln(&productID)
+	fmt.Print("Input Stock Product :")
 	fmt.Scanln(&inputStock)
 
 	err := pc.model.EditProduct(inputStock, productID)
 
-	if err !=nil {
+	if err != nil {
 		fmt.Printf("Error updating product: %v\n", err)
-		return failed, err;
+		return failed, err
 	}
 
-	return succ, nil;
+	return succ, nil
 }
