@@ -58,6 +58,19 @@ func (pm *ProductModel) EditProduct(newStock int, productID int) error {
 }
 
 
+// update Stok
+func(pm *ProductModel) UpdateStockProduct(productID int, quantity int)error {
+   
+	result := pm.db.Model(Products{}).Where("id = ?", productID).Update("Stock", gorm.Expr("Stock - ?", quantity));
+
+	if result.Error != nil {
+		return result.Error;
+	}
+
+	return nil;
+}
+
+
 // getAllProduct
 func (pm *ProductModel) GetAllProduct() []Products{
 	var getProduct []Products;
@@ -69,4 +82,17 @@ func (pm *ProductModel) GetAllProduct() []Products{
 	}
 
 	return getProduct;
+}
+
+// getOneProduct 
+func (pm *ProductModel) GetOneProduct(ID int) (Products, error) {
+	var product Products;
+
+	err := pm.db.Where("ID = ?", ID).First(&product).Error;
+
+	if err != nil {
+		return Products{}, err
+	}
+
+	return product, nil;
 }
