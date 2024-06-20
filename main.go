@@ -77,6 +77,8 @@ func Dashboard(
 	var input int = -1
 
 	for input != 0 && isLogin {
+		input = -1
+
 		fmt.Println("===== Dashboard =====")
 		fmt.Printf("Username: [%v] %v | Admin Access: %v\n\n", loginData.ID, loginData.Username, loginData.AdminAccess)
 		fmt.Println("1. Transaksi")
@@ -97,10 +99,10 @@ func Dashboard(
 		} else if input == 2 {
 			pc.ManageProduct(loginData)
 		} else if input == 3 {
-			mc.ManageMembers(loginData)
+			mc.ManageMembers()
 		} else if input == 4 {
 			if loginData.AdminAccess {
-				ec.ManageEmployees(loginData)
+				ec.ManageEmployees()
 			} else {
 				fmt.Printf("User %v tidak memiliki Admin Access!\n\n", loginData.Username)
 			}

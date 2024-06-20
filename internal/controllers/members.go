@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"tokoku/internal/models"
 )
 
@@ -17,13 +18,13 @@ func NewMembersController(m *models.MembersModel) *MembersController {
 	}
 }
 
-func (mc *MembersController) ManageMembers(loginData models.Employees) {
+func (mc *MembersController) ManageMembers() {
 	var input int = -1
 
 	for input != 0 {
+		input = -1
 		fmt.Println("===== Kelola Data Member =====")
-		fmt.Printf("Username: [%v] %v | Admin Access: %v\n\n", loginData.ID, loginData.Username, loginData.AdminAccess)
-
+		fmt.Println()
 		memberList := mc.model.ReadAllMembers()
 
 		if len(memberList) == 0 {
@@ -56,20 +57,41 @@ func (mc *MembersController) CreateMember() {
 	var member models.Members
 
 	fmt.Println("===== Tambah Member Baru =====")
-	fmt.Print("Nama: ")
-	name := bufio.NewScanner(os.Stdin)
-	name.Scan()
-	member.Name = name.Text()
 
-	fmt.Print("No. HP: ")
-	fmt.Scanln(&member.Phone)
+	for len(member.Name) == 0 {
+		fmt.Print("Nama: ")
+		name := bufio.NewScanner(os.Stdin)
+		name.Scan()
 
-	fmt.Print("Alamat: ")
-	address := bufio.NewScanner(os.Stdin)
-	address.Scan()
-	member.Address = address.Text()
+		if len(name.Text()) == 0 {
+			fmt.Printf("\nNama tidak boleh kosong!\n")
+		} else {
+			member.Name = name.Text()
+		}
+	}
+
+	for len(member.Phone) == 0 {
+		fmt.Print("No. HP: ")
+		fmt.Scanln(&member.Phone)
+
+		if len(member.Phone) == 0 {
+			fmt.Printf("\nNo. HP tidak boleh kosong!\n")
+		}
+	}
+
+	for len(member.Address) == 0 {
+		fmt.Print("Alamat: ")
+		address := bufio.NewScanner(os.Stdin)
+		address.Scan()
+
+		if len(address.Text()) == 0 {
+			fmt.Printf("\nAlamat tidak boleh kosong!\n")
+		} else {
+			member.Address = address.Text()
+		}
+	}
+
 	fmt.Println()
-
 	mc.model.CreateMember(member)
 }
 
@@ -78,27 +100,42 @@ func (mc *MembersController) UpdateMember() {
 	var memberID int
 
 	fmt.Println("===== Edit Data Member =====")
+	fmt.Println("Masukkan '0' untuk membatalkan.")
 	fmt.Print("Masukkan ID Member: ")
 	fmt.Scanln(&memberID)
 
-	member = mc.model.ReadMember(memberID)
+	if memberID != 0 {
+		member = mc.model.ReadMember(memberID)
 
-	fmt.Println("Kosongkan input jika data tidak akan dirubah.")
-	fmt.Printf("Nama Baru [%v]: ", member.Name)
-	name := bufio.NewScanner(os.Stdin)
-	name.Scan()
-	member.Name = name.Text()
+		if member.ID != 0 {
+			fmt.Println("Length memberID:", len(strconv.Itoa(memberID)))
+			fmt.Println("Kosongkan input jika data tidak akan dirubah.")
+			fmt.Printf("\nNama Baru [%v]: ", member.Name)
+			name := bufio.NewScanner(os.Stdin)
+			name.Scan()
 
-	fmt.Printf("No. HP Baru [%v]: ", member.Phone)
-	fmt.Scanln(&member.Phone)
+			if len(name.Text()) != 0 {
+				member.Name = name.Text()
+			}
 
-	fmt.Printf("Alamat Baru [%v]: ", member.Address)
-	address := bufio.NewScanner(os.Stdin)
-	address.Scan()
-	member.Address = address.Text()
+			fmt.Printf("No. HP Baru [%v]: ", member.Phone)
+			fmt.Scanln(&member.Phone)
+
+			fmt.Printf("Alamat Baru [%v]: ", member.Address)
+			address := bufio.NewScanner(os.Stdin)
+			address.Scan()
+
+			if len(address.Text()) != 0 {
+				member.Address = address.Text()
+			}
+
+			mc.model.UpdateMember(member)
+		} else {
+			fmt.Printf("Member tidak ditemukan!\n\n")
+		}
+	}
+
 	fmt.Println()
-
-	mc.model.UpdateMember(member)
 }
 
 func (mc *MembersController) DeleteMember() {
@@ -106,16 +143,25 @@ func (mc *MembersController) DeleteMember() {
 	var memberID, input int
 
 	fmt.Println("===== Hapus Data Member =====")
+	fmt.Println("Masukkan '0' untuk membatalkan.")
 	fmt.Print("Masukkan ID Member: ")
 	fmt.Scanln(&memberID)
 
-	member = mc.model.ReadMember(memberID)
+	if memberID != 0 {
+		member = mc.model.ReadMember(memberID)
 
-	fmt.Printf("\nData Member [%v] %v akan DIHAPUS!\nMasukkan '1' untuk konfirmasi, '0' untuk membatalkan.\n", member.ID, member.Name)
-	fmt.Print("Konfirmasi: ")
-	fmt.Scanln(&input)
+		if member.ID != 0 {
+			fmt.Printf("\nData Member [%v] %v akan DIHAPUS!\nMasukkan '1' untuk konfirmasi, '0' untuk membatalkan.\n", member.ID, member.Name)
+			fmt.Print("Konfirmasi: ")
+			fmt.Scanln(&input)
 
-	if input == 1 {
-		mc.model.DeleteMember(member)
+			if input == 1 {
+				mc.model.DeleteMember(member)
+			}
+		} else {
+			fmt.Printf("Member tidak ditemukan!\n\n")
+		}
 	}
+
+	fmt.Println()
 }
