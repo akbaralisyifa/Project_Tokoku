@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"tokoku/internal/models"
 )
 
@@ -109,7 +108,6 @@ func (mc *MembersController) UpdateMember() {
 		member = mc.model.ReadMember(memberID)
 
 		if member.ID != 0 {
-			fmt.Println("Length memberID:", len(strconv.Itoa(memberID)))
 			fmt.Println("Kosongkan input jika data tidak akan dirubah.")
 			fmt.Printf("\nNama Baru [%v]: ", member.Name)
 			name := bufio.NewScanner(os.Stdin)
