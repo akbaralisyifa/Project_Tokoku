@@ -35,7 +35,7 @@ func MainMenu(connection *gorm.DB) {
 	fmt.Println()
 
 	em := models.NewEmployeesModel(connection)
-	mm := models.NewMembersModel(connection)
+	// mm := models.NewMembersModel(connection)
 	pm := models.NewProductModel(connection)
 	rm := models.NewReceiptsModel(connection)
 	tm := models.NewTransModel(connection)
@@ -43,7 +43,7 @@ func MainMenu(connection *gorm.DB) {
 	var con AllControl
 
 	con.ec = controllers.NewEmployeesController(em)
-	con.mc = controllers.NewMembersController(mm)
+	// con.mc = controllers.NewMembersController(mm)
 	con.pc = controllers.NewProductController(pm)
 	con.rc = controllers.NewReceiptsController(rm)
 	con.tc = controllers.NewTransController(tm, pm)
@@ -63,7 +63,7 @@ func MainMenu(connection *gorm.DB) {
 			loginData, isLogin := con.ec.Login()
 			Dashboard(loginData, isLogin, con)
 		} else if input == 9 {
-			err := connection.AutoMigrate(&models.Employees{}, &models.Members{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockReceipts{})
+			err := connection.AutoMigrate(&models.Employees{}, &models.Products{}, &models.TransHistories{}, &models.TransProducts{}, &models.StockReceipts{})
 
 			if err != nil {
 				fmt.Println(err)
