@@ -23,7 +23,6 @@ func (tc *TransController) ManageTransaction(loginData models.Employees){
 
 	if inputMenu != 0 {
 		fmt.Println("==== KELOLA DATA TRANSAKSI ====");
-		fmt.Println(loginData.ID)
         fmt.Println("1. Tambah | 2. Data Transaksi | 0. Kembali")
 		fmt.Print("Input menu :");
 		fmt.Scanln(&inputMenu);
